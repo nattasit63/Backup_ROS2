@@ -1,0 +1,26 @@
+#service call : ros2 service call <service_name> <service_type> <arguments>
+#service type : ros2 service type /name
+#topic list+type : ros2 topic list -t
+#interface arguments : ros2 interface show (output from service type)
+	{ example :
+		ros2 run turtlesim turtlesim_node
+		ros2 run turtlesim turtle_teleop_key
+		ros2 service call /turtle1/set_pen turtlesim/srv/SetPen "{r: 255,g: 0,b: 0,width: 3}"
+ 		- remapping : ros2 run turtlesim turtle_teleop_key --ros-args --remap turtle1/cmd_vel:=turtle2/cmd_vel
+	}
+#publish : ros2 topic pub <topic_name> <msg_type> <args>
+	{example : 
+		ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 2.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 1.8}}"
+	}
+#create pkg : ros2 pkg create --build-type ament_python <package_name>
+
+#rosdep install : rosdep install -i --from-path src --rosdistro foxy -y
+ros2 run py_srvcli service
+#ros2 interface show tutorial_interfaces/srv/AddThreeInts
+ ros2 service call /add_three_ints tutorial_interfaces/srv/AddThreeInts "{a: 1,b: 2,c: 3}"
+
+ros2 interface show action_tutorials_interfaces/action/Fibonacci
+
+#move robot in gazebo
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/robot1/cmd_vel
+
