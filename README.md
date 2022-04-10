@@ -9,7 +9,7 @@ Significant Packages :
                            Move robot command : ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/robot1/cmd_vel
                            
          - turtlesim_control           }
-           turtlesim_control_srv       }   Very Important example to do basic things in ROS2 (especialy action) by Aj.PI Thanacha
+           turtlesim_control_srv       }   Very Important example to do basic things in ROS2 (especially action) by Aj.PI Thanacha
            turtlesim_control_action    }
                             
          - Others        : Tutorial to do things and Example to study
