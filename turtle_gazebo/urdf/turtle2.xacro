@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<robot name= "robot_description2" xmlns:xacro="http://www.ros.org.wiki/xacro">
+ 	<xacro:include filename="$(find turtle_gazebo)/urdf/turtle_properties.xacro"/> 
+ 	<xacro:include filename="$(find turtle_gazebo)/urdf/turtle_chassis.xacro"/> 
+ 	<xacro:include filename="$(find turtle_gazebo)/urdf/turtle_wheel.xacro"/> 
+ 	<xacro:include filename="$(find turtle_gazebo)/urdf/turtle_castor.xacro"/>
+	<xacro:chassis
+	 	parent="base_footprint2" child= "base_link2"/>
+ 	<xacro:wheel 
+ 		name="left2"
+ 		translation="
+ 			0 
+ 			${WHEEL_SEPARATION/2}
+ 			${WHEEL_RADIUS-(BASE_HEIGHT/2 +BASE_ELEVATION)}"
+ 		rotation="0 0 0"
+ 		parent="base_link2"/> 
+ 	<xacro:wheel 
+ 		name="right2"
+ 		translation="
+ 			0 
+ 			${-WHEEL_SEPARATION/2} 
+ 			${WHEEL_RADIUS-(BASE_HEIGHT/2+BASE_ELEVATION)}"
+ 		rotation="0 0 0"
+ 		parent="base_link2"/> 
+
+ 	<xacro:castor
+ 		name="right_front2"
+ 		translation="
+ 			${CASTOR_SEPARATION_X/2} 
+ 			${CASTOR_SEPARATION_Y/2} 
+ 			${CASTOR_RADIUS-(BASE_HEIGHT/2+BASE_ELEVATION)}"
+ 		rotation="0 0 0"
+ 		parent="base_link2"/> 
+
+
+ 	<xacro:castor 
+ 		name="left_front2"
+ 		translation="
+ 			${CASTOR_SEPARATION_X/2} 
+ 			${-CASTOR_SEPARATION_Y/2} 
+ 			${CASTOR_RADIUS-(BASE_HEIGHT/2+BASE_ELEVATION)}"
+ 		rotation="0 0 0"
+ 		parent="base_link2"/> 
+ 	<xacro:castor 
+ 		name="right_rear2"
+ 		translation="
+ 			${-CASTOR_SEPARATION_X/2} 
+ 			${CASTOR_SEPARATION_Y/2} 
+ 			${CASTOR_RADIUS-(BASE_HEIGHT/2+BASE_ELEVATION)}"
+ 		rotation="0 0 0"
+ 		parent="base_link2"/> 
+ 	<xacro:castor 
+ 		name="left_rear2"
+ 		translation="
+ 			${-CASTOR_SEPARATION_X/2} 
+ 			${-CASTOR_SEPARATION_Y/2} 
+ 			${CASTOR_RADIUS-(BASE_HEIGHT/2+BASE_ELEVATION)}"
+ 		rotation="0 0 0"
+ 		parent="base_link2"/>
+</robot>
+
+
+ 

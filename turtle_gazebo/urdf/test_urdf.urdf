@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<robot name="turtle1">
+ 	<link name= "base_footprint"/> 
+ 	<link name= "base_link">
+ 		<visual>
+ 			<geometry>
+ 				<box size="8.65 12.55 4.295"/>
+ 			</geometry>
+ 			<material name="chassis_color">
+ 				<color rgba= "1 1 1 1"/>
+ 			</material>
+ 		</visual>
+ 	</link>
+ 	<joint name= "base_footprint_to_base_link" type="fixed">
+ 		<parent link= "base_footprint"/>
+		<child link= "base_link"/>
+ 		<origin xyz ="0 0 0.2125"/>
+ 	</joint>
+</robot>
+

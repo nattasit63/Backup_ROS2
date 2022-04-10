@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<robot name= "turtle_chassis2" xmlns:xacro="http://www.ros.org.wiki/xacro">
+ 	<xacro:include filename="$(find turtle_description)/urdf/turtle_properties2.xacro"/>
+ 	
+	 
+	<xacro:macro name="chassis2" params="parent child">
+ 		<link name= "${parent}"/> 
+ 		<link name= "${child}">
+ 			<visual>
+ 				<geometry>
+ 					<box size="${BASE_LENGTH} 
+ 						${BASE_WIDTH} 
+ 						${BASE_HEIGHT}"/>
+ 				</geometry>
+ 				<material name="chassis_color">
+ 					<color rgba= "1 1 1 1"/>
+				</material>
+			</visual>
+		</link>
+		<joint name= "base_footprint_to_base_link" type="fixed">
+			<parent link= "${parent}"/>
+			<child link= "${child}"/>
+ 			<origin xyz ="0 0 ${BASE_ELEVATION+BASE_HEIGHT/2}"/>
+ 		</joint>
+ 	</xacro:macro>
+
+
+
+
+</robot>

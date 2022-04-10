@@ -1,0 +1,1169 @@
+<!-- 
+<robot name="r2d2">
+
+<link name="axis">
+  <inertial>
+    <mass value="1"/>
+    <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
+    <origin/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="1.57 0 0" />
+    <geometry>
+      <cylinder radius="0.01" length=".5" />
+    </geometry>
+    <material name="gray">
+      <color rgba=".2 .2 .2 1" />
+    </material>
+  </visual>
+
+  <collision>
+    <origin xyz="0 0 0" rpy="1.57 0 0" />
+    <geometry>
+      <cylinder radius="0.01" length=".5" />
+    </geometry>
+    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
+  </collision>
+</link>
+
+<link name="leg1">
+  <inertial>
+    <mass value="1"/>
+    <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
+    <origin/>
+  </inertial>
+
+  <visual>
+    <origin xyz="0 0 -.3" />
+    <geometry>
+      <box size=".20 .10 .8" />
+    </geometry>
+    <material name="white">
+      <color rgba="1 1 1 1"/>
+    </material>
+  </visual>
+
+  <collision>
+    <origin xyz="0 0 -.3" />
+    <geometry>
+      <box size=".20 .10 .8" />
+    </geometry>
+    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
+  </collision>
+</link>
+
+<joint name="leg1connect" type="fixed">
+  <origin xyz="0 .30 0" />
+  <parent link="axis"/>
+  <child link="leg1"/>
+</joint>
+
+<link name="leg2">
+  <inertial>
+    <mass value="1"/>
+    <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
+    <origin/>
+  </inertial>
+
+  <visual>
+    <origin xyz="0 0 -.3" />
+    <geometry>
+      <box size=".20 .10 .8" />
+    </geometry>
+    <material name="white">
+      <color rgba="1 1 1 1"/>
+    </material>
+  </visual>
+
+  <collision>
+    <origin xyz="0 0 -.3" />
+    <geometry>
+      <box size=".20 .10 .8" />
+    </geometry>
+    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
+  </collision>
+</link>
+
+<joint name="leg2connect" type="fixed">
+  <origin xyz="0 -.30 0" />
+  <parent link="axis"/>
+  <child link="leg2"/>
+</joint>
+
+<link name="body">
+  <inertial>
+    <mass value="1"/>
+    <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
+    <origin/>
+  </inertial>
+
+  <visual>
+    <origin xyz="0 0 -0.2" />
+    <geometry>
+      <cylinder radius=".20" length=".6"/>
+    </geometry>
+    <material name="white"/>
+  </visual>
+
+  <collision>
+    <origin xyz="0 0 0.2" />
+    <geometry>
+      <cylinder radius=".20" length=".6"/>
+    </geometry>
+    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
+  </collision>
+</link>
+
+<joint name="tilt" type="revolute">
+  <parent link="axis"/>
+  <child link="body"/>
+  <origin xyz="0 0 0" rpy="0 0 0" />
+  <axis xyz="0 1 0" />
+  <limit upper="0" lower="-.5" effort="10" velocity="10" />
+</joint>
+
+<link name="head">
+  <inertial>
+    <mass value="1"/>
+    <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
+    <origin/>
+  </inertial>
+
+  <visual>
+    <geometry>
+      <sphere radius=".4" />
+    </geometry>
+    <material name="white" />
+  </visual>
+
+  <collision>
+    <origin/>
+    <geometry>
+      <sphere radius=".4" />
+    </geometry>
+    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
+  </collision>
+</link>
+
+<joint name="swivel" type="continuous">
+  <origin xyz="0 0 0.1" />
+  <axis xyz="0 0 1" />
+  <parent link="body"/>
+  <child link="head"/>
+</joint>
+
+<link name="rod">
+  <inertial>
+    <mass value="1"/>
+    <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
+    <origin/>
+  </inertial>
+
+  <visual>
+    <origin xyz="0 0 -.1" />
+    <geometry>
+      <cylinder radius=".02" length=".2" />
+    </geometry>
+    <material name="gray" />
+
+  </visual>
+
+  <collision>
+    <origin/>
+    <geometry>
+      <cylinder radius=".02" length=".2" />
+    </geometry>
+    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
+  </collision>
+</link>
+
+<joint name="periscope" type="prismatic">
+  <origin xyz=".12 0 .15" />
+  <axis xyz="0 0 1" />
+  <limit upper="0" lower="-.5" effort="10" velocity="10" />
+  <parent link="head"/>
+  <child link="rod"/>
+</joint>
+
+<link name="box">
+  <inertial>
+    <mass value="1"/>
+    <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
+    <origin/>
+  </inertial>
+
+  <visual>
+    <geometry>
+      <box size=".05 .05 .05" />
+    </geometry>
+    <material name="blue" >
+      <color rgba="0 0 1 1" />
+    </material>
+  </visual>
+
+  <collision>
+    <origin/>
+    <geometry>
+      <box size=".05 .05 .05" />
+    </geometry>
+    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
+  </collision>
+</link>
+<joint name="boxconnect" type="fixed">
+  <origin xyz="0 0 0" />
+  <parent link="rod"/>
+  <child link="box"/>
+</joint>
+
+</robot> -->
+
+
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="URDFCARVERmini">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.043034 0.091859 0.63812"
+        rpy="0 0 0" />
+      <mass
+        value="233.16" />
+      <inertia
+        ixx="10.23"
+        ixy="5.7172E-05"
+        ixz="-0.00052006"
+        iyy="11.448"
+        
+        iyz="-0.31266"
+        izz="5.5914" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="CamTop">
+    <inertial>
+      <origin
+        xyz="6.9389E-18 0 0.0049842"
+        rpy="0 0 0" />
+      <mass
+        value="0.04343" />
+      <inertia
+        ixx="1.7418E-06"
+        ixy="1.9048E-22"
+        ixz="-5.7872E-21"
+        iyy="2.4134E-05"
+        iyz="0"
+        izz="2.5156E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CamTop.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.66667 0.69804 0.76863 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CamTop.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CamJ1"
+    type="fixed">
+    <origin
+      xyz="0.043033 -0.95082 -0.058427"
+      rpy="0.5236 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="CamTop" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="CamMid">
+    <inertial>
+      <origin
+        xyz="0 0 0.0049842"
+        rpy="0 0 0" />
+      <mass
+        value="0.04343" />
+      <inertia
+        ixx="1.7418E-06"
+        ixy="-1.6499E-23"
+        ixz="-8.499E-23"
+        iyy="2.4134E-05"
+        iyz="-4.5271E-24"
+        izz="2.5156E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CamMid.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.66667 0.69804 0.76863 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CamMid.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CamM"
+    type="fixed">
+    <origin
+      xyz="0.043033 -0.95427 -0.088688"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="CamMid" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="CamBottom">
+    <inertial>
+      <origin
+        xyz="4.8572E-17 0 0.0049842"
+        rpy="0 0 0" />
+      <mass
+        value="0.04343" />
+      <inertia
+        ixx="1.7418E-06"
+        ixy="6.2661E-23"
+        ixz="-4.4193E-22"
+        iyy="2.4134E-05"
+        iyz="0"
+        izz="2.5156E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CamBottom.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.66667 0.69804 0.76863 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CamBottom.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CamJ2"
+    type="fixed">
+    <origin
+      xyz="0.043033 -0.94864 -0.1204"
+      rpy="1.2217 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="CamBottom" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="FrontLidar">
+    <inertial>
+      <origin
+        xyz="2.7756E-17 -0.0075479 1.1102E-16"
+        rpy="0 0 0" />
+      <mass
+        value="0.064334" />
+      <inertia
+        ixx="2.0607E-05"
+        ixy="-3.1575E-38"
+        ixz="0"
+        iyy="3.8478E-05"
+        iyz="-3.6159E-38"
+        izz="2.0607E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/FrontLidar.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.50196 0.50196 0.50196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/FrontLidar.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Lidar1"
+    type="continuous">
+    <origin
+      xyz="0.21183 -0.9145 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="FrontLidar" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="BackLidar">
+    <inertial>
+      <origin
+        xyz="2.7756E-17 -0.0075479 5.5511E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.064334" />
+      <inertia
+        ixx="2.0607E-05"
+        ixy="5.8878E-22"
+        ixz="-1.0588E-22"
+        iyy="3.8478E-05"
+        iyz="-1.2611E-22"
+        izz="2.0607E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/BackLidar.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.50196 0.50196 0.50196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/BackLidar.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Lidar2"
+    type="continuous">
+    <origin
+      xyz="-0.12577 -0.3765 0"
+      rpy="1.5708 0 -0.033633" />
+    <parent
+      link="base_link" />
+    <child
+      link="BackLidar" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="CasterBL">
+    <inertial>
+      <origin
+        xyz="-1.005E-08 -0.049566 -0.0017619"
+        rpy="0 0 0" />
+      <mass
+        value="0.1147" />
+      <inertia
+        ixx="0.00019129"
+        ixy="-1.504E-10"
+        ixz="-4.0834E-10"
+        iyy="0.00010692"
+        iyz="-1.5969E-05"
+        izz="0.00018564" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterBL.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.66667 0.69804 0.76863 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterBL.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CasterCaseL"
+    type="continuous">
+    <origin
+      xyz="0.20303 -0.43775 -0.10867"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="CasterBL" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="CasterWeelBL">
+    <inertial>
+      <origin
+        xyz="-2.7756E-17 -2.7756E-17 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.37653" />
+      <inertia
+        ixx="0.00070796"
+        ixy="-2.9387E-36"
+        ixz="-6.5509E-37"
+        iyy="0.00038471"
+        iyz="3.2163E-36"
+        izz="0.00038471" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterWeelBL.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 0.61176 0.21961 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterWeelBL.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CasterWeel1"
+    type="continuous">
+    <origin
+      xyz="0 -0.1025 -0.04"
+      rpy="0 0 0" />
+    <parent
+      link="CasterBL" />
+    <child
+      link="CasterWeelBL" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="CasterBR">
+    <inertial>
+      <origin
+        xyz="-1.005E-08 -0.049566 -0.0017619"
+        rpy="0 0 0" />
+      <mass
+        value="0.1147" />
+      <inertia
+        ixx="0.00019129"
+        ixy="-1.504E-10"
+        ixz="-4.0834E-10"
+        iyy="0.00010692"
+        iyz="-1.5969E-05"
+        izz="0.00018564" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterBR.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.66667 0.69804 0.76863 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterBR.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CasterCaseR"
+    type="continuous">
+    <origin
+      xyz="-0.11697 -0.43775 -0.10867"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="CasterBR" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="CasterWeelBR">
+    <inertial>
+      <origin
+        xyz="-1.3878E-17 -2.7756E-17 -5.5511E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.37653" />
+      <inertia
+        ixx="0.00070796"
+        ixy="-7.04E-37"
+        ixz="-5.0184E-37"
+        iyy="0.00038471"
+        iyz="3.2163E-36"
+        izz="0.00038471" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterWeelBR.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 0.61176 0.21961 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterWeelBR.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CasterWeel2"
+    type="continuous">
+    <origin
+      xyz="0 -0.1025 -0.04"
+      rpy="0 0 0" />
+    <parent
+      link="CasterBR" />
+    <child
+      link="CasterWeelBR" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="Rocker BogieL">
+    <inertial>
+      <origin
+        xyz="0.0352123666344037 -0.04761240182083 -0.0533750293218704"
+        rpy="0 0 0" />
+      <mass
+        value="2.07186773002939" />
+      <inertia
+        ixx="0.0187365529322008"
+        ixy="-0.00083935264598362"
+        ixz="-0.00159909940913651"
+        iyy="0.0171306171152395"
+        iyz="-0.0031670004437457"
+        izz="0.00437580994886358" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/Rocker BogieL.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.666666666666667 0.698039215686274 0.768627450980392 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/Rocker BogieL.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RBL"
+    type="continuous">
+    <origin
+      xyz="0.14003 -0.74768 -0.079948"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Rocker BogieL" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="FrontCasterL">
+    <inertial>
+      <origin
+        xyz="-1.005E-08 -0.049566 -0.0017619"
+        rpy="0 0 0" />
+      <mass
+        value="0.1147" />
+      <inertia
+        ixx="0.00019129"
+        ixy="-1.504E-10"
+        ixz="-4.0834E-10"
+        iyy="0.00010692"
+        iyz="-1.5969E-05"
+        izz="0.00018564" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/FrontCasterL.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.66667 0.69804 0.76863 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/FrontCasterL.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Caster3"
+    type="continuous">
+    <origin
+      xyz="0.063 -0.028 0.14"
+      rpy="0 0 0" />
+    <parent
+      link="Rocker BogieL" />
+    <child
+      link="FrontCasterL" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="CasterWheelL">
+    <inertial>
+      <origin
+        xyz="-2.77555756156289E-17 0 -1.11022302462516E-16"
+        rpy="0 0 0" />
+      <mass
+        value="0.376534628570965" />
+      <inertia
+        ixx="0.000707958475897657"
+        ixy="2.02038091547581E-36"
+        ixz="-1.13034211558129E-36"
+        iyy="0.000384706137966206"
+        iyz="-1.02546253704504E-36"
+        izz="0.000384706137966206" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterWheelL.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 0.611764705882353 0.219607843137255 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterWheelL.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CasterWheel3"
+    type="continuous">
+    <origin
+      xyz="0 -0.1025 -0.04"
+      rpy="0 0 0" />
+    <parent
+      link="FrontCasterL" />
+    <child
+      link="CasterWheelL" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="MainWheelL">
+    <inertial>
+      <origin
+        xyz="0.027 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.350955689882228" />
+      <inertia
+        ixx="0.00102520726616072"
+        ixy="-6.13713069304306E-23"
+        ixz="1.656235135831E-20"
+        iyy="0.000544008747263356"
+        iyz="4.79776266960668E-20"
+        izz="0.000544008747263356" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/MainWheelL.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.666666666666667 0.698039215686274 0.768627450980392 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/MainWheelL.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="DiffWheelL"
+    type="continuous">
+    <origin
+      xyz="0.0427 -0.118 -0.0975"
+      rpy="0 0 0" />
+    <parent
+      link="Rocker BogieL" />
+    <child
+      link="MainWheelL" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="Rocker BogieR">
+    <inertial>
+      <origin
+        xyz="-0.0352123534176028 -0.0476123943818939 -0.0533751380850981"
+        rpy="0 0 0" />
+      <mass
+        value="2.07187043666396" />
+      <inertia
+        ixx="0.0187365756177354"
+        ixy="0.00083935248430209"
+        ixz="0.00159910240443796"
+        iyy="0.0171306395197759"
+        iyz="-0.00316699855422546"
+        izz="0.00437581029854864" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/Rocker BogieR.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.666666666666667 0.698039215686274 0.768627450980392 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/Rocker BogieR.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RBR"
+    type="continuous">
+    <origin
+      xyz="-0.053967 -0.74768 -0.079948"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Rocker BogieR" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="FrontCasterR">
+    <inertial>
+      <origin
+        xyz="-1.005E-08 -0.049566 -0.0017619"
+        rpy="0 0 0" />
+      <mass
+        value="0.1147" />
+      <inertia
+        ixx="0.00019129"
+        ixy="-1.504E-10"
+        ixz="-4.0834E-10"
+        iyy="0.00010692"
+        iyz="-1.5969E-05"
+        izz="0.00018564" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/FrontCasterR.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.66667 0.69804 0.76863 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/FrontCasterR.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CasterCase4"
+    type="continuous">
+    <origin
+      xyz="-0.063 -0.028 0.14"
+      rpy="0 0 0" />
+    <parent
+      link="Rocker BogieR" />
+    <child
+      link="FrontCasterR" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="CasterWheelR">
+    <inertial>
+      <origin
+        xyz="-1.38777878078145E-17 0 -5.55111512312578E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.376534628570965" />
+      <inertia
+        ixx="0.000707958475897657"
+        ixy="-1.05490681498846E-19"
+        ixz="2.62513369465097E-20"
+        iyy="0.000384706137966206"
+        iyz="0"
+        izz="0.000384706137966206" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterWheelR.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 0.611764705882353 0.219607843137255 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/CasterWheelR.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CasterWheel4"
+    type="continuous">
+    <origin
+      xyz="0 -0.1025 -0.04"
+      rpy="-1.4581 0 0" />
+    <parent
+      link="FrontCasterR" />
+    <child
+      link="CasterWheelR" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="MainWheelR">
+    <inertial>
+      <origin
+        xyz="-0.027 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.350955689882228" />
+      <inertia
+        ixx="0.00102520726616072"
+        ixy="-2.67819475355464E-23"
+        ixz="8.03902471120334E-21"
+        iyy="0.000544008747263356"
+        iyz="4.73043912803762E-20"
+        izz="0.000544008747263356" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/MainWheelR.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.666666666666667 0.698039215686274 0.768627450980392 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://py_pkg/meshes/MainWheelR.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="DiffWheelR"
+    type="continuous">
+    <origin
+      xyz="-0.0427 -0.118 -0.0975"
+      rpy="0 0 0" />
+    <parent
+      link="Rocker BogieR" />
+    <child
+      link="MainWheelR" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+</robot>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot name= "turtle_wheel" xmlns:xacro="http://www.ros.org.wiki/xacro">
+ 	<xacro:include filename="$(find turtle_gazebo)/urdf/turtle_properties.xacro"/>
+	 
+
+ 	<xacro:macro name="wheel" params="name translation rotation parent">
+ 		<link name= "${name}_wheel"> 
+ 			<visual>
+ 				<origin rpy="${PI/2} 0 0"/>
+ 				<geometry>
+ 					<cylinder radius="${WHEEL_RADIUS}"
+ 						length="${WHEEL_THICKNESS}"/>
+ 				</geometry>
+ 				<material name="${name}_wheel_color">
+ 					<color rgba= "0.25 0.25 0 1"/>
+				</material>
+			</visual>
+		</link>
+		<joint name= "${name}_wheel_joint" type="fixed">
+			<parent link="${parent}"/>
+			<child link="${name}_wheel"/>
+ 			<origin xyz="${translation}" rpy="${rotation}"/>
+ 			<axis xyz="0 1 0"/>
+ 		</joint>
+ 	</xacro:macro0>
+
+
+</robot>
