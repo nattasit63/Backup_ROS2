@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>turtlesim_control</name>
+  <version>0.0.1</version>
+  <description>
+    This package consists of node that continuously control Turtlesim as well as launch file for running necessary nodes.
+  </description>
+  <maintainer email="tchoopojcharoen@gmail.com">Pi Thanacha Choopojcharoen</maintainer>
+  <license>GPLv2</license>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>turtlesim</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>numpy</exec_depend>
+  <exec_depend>math</exec_depend>
+  <exec_depend>ros2launch</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

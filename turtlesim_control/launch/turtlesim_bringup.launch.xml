@@ -1,0 +1,9 @@
+<launch>
+    <arg name="gain" default="2.0"/>
+    <node pkg="turtlesim" exec="turtlesim_node" name="sim"/>
+    <node pkg="turtlesim_control" exec="controller" name="sim" output="screen">
+      <!--param name="linear_gain" value="$(var gain)"/-->
+      <remap from="/pose" to="/turtle1/pose"/>
+      <remap from="/cmd_vel" to="/turtle1/cmd_vel"/>
+    </node>
+  </launch>
