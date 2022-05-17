@@ -26,10 +26,23 @@ class Select_file():
         self.node_list_yaml = yml_dict.get('node_list')
         self.edge_list_yaml = yml_dict.get('edge_list')
         self.assign_node = yml_dict.get('assign_list')
-    def write_file(self,data):
-        fname = 'write.building.yaml'
+    def write_file(self,data,filename):
+        print('Writing to file . . .')
+        fname = filename
         with open(fname,"w") as f:
             yaml.dump(data,f)
+        print('Write Done !')
+    
+    def read_matrix(self,filename):
+        print('Reading file . . .')
+        fname = filename
+        with open(fname,"r") as f:
+            loaded = yaml.safe_load(f)
+        loaded = np.array(loaded)
+        print(loaded)
+        print('Read Done !')
+        return loaded
+
 
 class Draw():
     def __init__(self):  
@@ -61,13 +74,10 @@ class NX():
     def adjacency_matrix(self,node_ls):
         n=0
         sum=0
-        sum_cost=[]
-        cost_list=[]
         size = len(node_ls)
         self.adjMatrix = np.zeros((size,size))
         for i in range(size):
             for j in range(size):
-                # print("---------------------------------------------")
                 sum = 0
                 flag = 0  
                 #0 = Have Path (No Error)
@@ -99,16 +109,11 @@ class NX():
                                     sum = min(e[2],sum)
                                 else:
                                     sum = e[2]
-                                
-
-                # print(i,j,sum)
                 self.adjMatrix[i][j]= sum
                     
 
         # print(path)
-        # print(cost_list) 
-        # print(sum)     
-        # print(sum_cost)                
+        # print(sum)                  
        
         # print(self.adjMatrix)
         return self.adjMatrix
@@ -186,18 +191,30 @@ if __name__ == '__main__':
         ##Test A* path
             # test_astar = nw.astar(0,3)
             # print(test_astar)
-            adj_matrix = nw.adjacency_matrix(nw.nodelist)   
-            data = {"Adjacency Matrix": adj_matrix}     
-            select_file.write_file(data)   
-            print(select_file.write_file(data) )
+
+            adj_matrix = nw.adjacency_matrix(nw.nodelist) 
+
+        ## write file
+            # select_file.write_file({"Adjacency Matrix": np.matrix.tolist(adj_matrix)},'QQQ.yaml')  
+        
+        ## read file
+            #select_file.read_matrix('QQQ.yaml')
 
             pos = nx.get_node_attributes(G,'pos')
             labels = nx.get_edge_attributes(G,'weight')
             nx.draw_networkx_edge_labels(G,pos,edge_labels=labels)
             nx.draw(G,pos,with_labels = True,arrows = True)
 
-            # print((nx.adjacency_matrix(G,nw.astar(0,3))))
             plt.show()
+            state =3
+
+
+        elif state==3:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
+                    exit()
+            
             
         
       
