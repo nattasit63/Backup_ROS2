@@ -1,12 +1,20 @@
-import os 
-import sys 
-import rclpy 
+import os # Operating system library
+import sys # Python runtime environment library
+import rclpy # ROS Client Library for Python
+
+# Package Management Library
 from ament_index_python.packages import get_package_share_directory 
 
 # Gazebo's service to spawn a robot
 from gazebo_msgs.srv import SpawnEntity
 
 def main():
+
+    """ Main for spawning a robot node """
+    # Get input arguments from user
+    argv = sys.argv[1:]
+
+    # Start node
     rclpy.init()
 
     # Get the file path for the robot model
@@ -24,9 +32,14 @@ def main():
     if not client.service_is_ready():
         client.wait_for_service()
         node.get_logger().info("...connected!")
+
+    # Get path to the robot
+    sdf_file_path = os.path.join(get_package_share_directory("turtle_gazebo"), "urdf","model.sdf")
+
+    # Show file path
+    print(f"robot_sdf={sdf_file_path}")
     
     # Set data for request
-    argv = sys.argv[1:]
     request = SpawnEntity.Request()
     request.name = argv[0]
     request.xml = open(sdf_file_path, 'r').read()
@@ -43,6 +56,7 @@ def main():
     else:
         raise RuntimeError(
             'exception while calling service: %r' % future.exception())
+
     node.get_logger().info("Done! Shutting down node.")
     node.destroy_node()
     rclpy.shutdown()
@@ -50,6 +64,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
