@@ -18,6 +18,7 @@ setup(
 
         # Path to the mobile robot sdf file
         (os.path.join('share', package_name,'urdf/'), glob('./urdf/*')),
+
         # Path to the world file (i.e. warehouse + global environment)
         (os.path.join('share', package_name,'urdf/'), glob('./world/*')),
     ],
@@ -31,7 +32,6 @@ setup(
     entry_points={
         'console_scripts': [
             'spawn_turtle = turtle_gazebo.spawn_turtle:main',
-            'turtle_tf2_broadcaster = turtle_gazebo.turtle_to_TF2:main',
             'turtlefollow = turtle_gazebo.turtlefollow:main',
             'follow_first_robot = turtle_gazebo.follow_first_robot:main',
         ],
