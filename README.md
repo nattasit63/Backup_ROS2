@@ -1,7 +1,7 @@
 # Backup_ROS2
 My Backup code and file for ROS2 project (during my internship at COXSYS Robotics and Advanced Robotic project)
 
-Significant Packages :
+Important Packages :
 
          - turtle_gazebo : Launch gazebo via launch.py , Spawn robots model in gazebo world , Twist tele_op key to move robots
                            ,Subscribe and Publish twist to another robot model to copy the first one and Publish movement to turtlesim too
@@ -13,5 +13,6 @@ Significant Packages :
            turtlesim_control_action    }
          
          - rmf_begin     : Interface(select yaml file,create node on screen) , Tutorial for Vehicle Routing Problem python
-         
+                           Do VRP (pick up and delivery) from yaml file
+      
          - Others        : Tutorial to do things and Example to study
