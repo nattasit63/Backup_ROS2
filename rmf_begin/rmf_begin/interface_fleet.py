@@ -1,4 +1,5 @@
 from array import array
+from fileinput import filename
 import pygame as pg
 import yaml
 from tkinter import *
@@ -9,7 +10,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from networkx import DiGraph, from_numpy_matrix, relabel_nodes, set_node_attributes
 from numpy import array
-
+from vrpy import VehicleRoutingProblem
+from PIL import Image
 
 class Begin():
     def __init__(self):
@@ -71,6 +73,13 @@ class Draw():
         labels = nx.get_edge_attributes(G,'weight')
         nx.draw_networkx_edge_labels(G,pos,edge_labels=labels)
         nx.draw(G,pos,with_labels = True,arrows = True)
+        plt.ioff()
+
+    def sourcesink_nx_graph(self):
+        pos = nx.spring_layout(G)
+        nx.draw_networkx_nodes(G, pos)
+        nx.draw_networkx_labels(G, pos)
+        nx.draw_networkx_edges(G, pos, edge_color='r', arrows = True)
         plt.show()
         
 
@@ -85,9 +94,12 @@ class NX():
         self.adjMatrix=[]
         self.isPathAavailable=0
         self.demand_list=dict
+        self.prob = 0
+        self.route = []
+        self.route_astar = []
 
-    def astar(self,start_node,end_node):
-        self.astar_path = nx.astar_path(G,str(start_node),str(end_node), heuristic = None ,weight='weight')
+    def astar(self,graph,start_node,end_node):
+        self.astar_path = nx.astar_path(graph,str(start_node),str(end_node), heuristic = None ,weight='weight')
         return self.astar_path
 
     def adjacency_matrix(self,node_ls):
@@ -104,11 +116,11 @@ class NX():
                 if i==j :
                     flag = 1
                 try:
-                    path = self.astar(i,j)             
+                    path = self.astar(G,i,j)             
                 except :
                     flag = 2
                 if(flag == 0):
-                    path = self.astar(i,j)
+                    path = self.astar(G,i,j)
                     path_size = len(path)
                     for k in range(path_size-1):
                         for s,e in select_file.edge_list_yaml.items():
@@ -123,15 +135,9 @@ class NX():
                                 else:
                                     sum = e[2]
                 self.adjMatrix[i][j]= sum             
-        # print(path)
-        # print(sum)                  
-        # print(self.adjMatrix)
         return self.adjMatrix
                 
                
-
-
-
 
 if __name__ == '__main__':
     pg.init()
@@ -141,16 +147,18 @@ if __name__ == '__main__':
     nw = NX()
     G = DiGraph()
     num_pressadd = 0
+    time_run=1
     screen_list=[]
     select_file = Select_file()
     state=0
-    bg = pg.image.load(select_file.image_file)
+    bg = pg.image.load(select_file.image_file)    # load image from yaml to overlay on pygame
     bg = pg.transform.scale(bg, (begin.width, begin.height))
     rect = bg.get_rect()
     screen = begin.screen
     screen.fill((255,255,255))
     rect = rect.move((0, 0))
-
+    t =[]
+    t1=[]
     while (1):
         if state==0:
             screen.blit(bg,rect)
@@ -167,13 +175,13 @@ if __name__ == '__main__':
                 if event.type == pg.QUIT:
                     pg.quit()
                     exit()
-                elif event.type == pg.MOUSEBUTTONDOWN and event.button==1:
+                elif event.type == pg.MOUSEBUTTONDOWN and event.button==1: #if left click ,Add node at mouse pos
                     current_screen = pg.Surface.copy(begin.screen)
                     screen_list.append(current_screen)
                     draw.circle(mouse[0],mouse[1],begin.width//100)
                     num_pressadd+=1
                     
-                elif event.type == pg.MOUSEBUTTONDOWN and event.button==3:
+                elif event.type == pg.MOUSEBUTTONDOWN and event.button==3:  #if right click ,Undo one time
                     if num_pressadd>=0:
                         num_pressadd = num_pressadd-1
                         begin.screen.blit(current_screen,(0,0))
@@ -185,32 +193,37 @@ if __name__ == '__main__':
                 if event.type == pg.QUIT:
                     pg.quit()
                     exit()
-            for n,p in select_file.node_list_yaml.items():
-                G.add_node(n,pos=p)
+            for n,p in select_file.node_list_yaml.items():  #Add nodes from yaml
+                G.add_node(str(n),pos=p)
                 nw.nodelist.append(n)
-            for s,e in select_file.edge_list_yaml.items():
+            for s,e in select_file.edge_list_yaml.items():  #Add edge from yaml
                 G.add_edge(str(e[0]),str(e[1]),weight = e[2])
                 nw.astar_path_cost.append(e[2])
-            for c,v in select_file.assign_node.items():
-                if c == "pick_up":
-                    nw.pickup_node+=v
-                if c == "depot":
-                    nw.depot_node+=v
-                if c == "drop off":
-                    nw.dropoff_node+=v
 
-            #DEMAND node : amount
-            nw.demand_list = select_file.demand_node_yaml
+            # for c,v in select_file.assign_node.items():     #Assign nodes from yaml
+            #     if c == "pick_up":
+            #         nw.pickup_node+=v
+            #     if c == "depot":
+            #         nw.depot_node+=v
+            #     if c == "drop off":
+            #         nw.dropoff_node+=v
+      
 
-            #Sum a* path cost 
+            #Sum a* path cost to matrix
             adj_matrix = nw.adjacency_matrix(nw.nodelist) 
+            
 
-            # Write file
-            # select_file.write_file({"Adjacency Matrix": np.matrix.tolist(adj_matrix)},'QQQ.yaml')  
+            # Write file (set variable timerun=0)
+            if time_run==0:
+                select_file.write_file({"Adjacency Matrix": np.matrix.tolist(adj_matrix)},'QQQ.yaml')  
+                time_run=1
         
-            # Read file
+            # Read file (set variable timerun=1)
             select_file.read_matrix('QQQ.yaml')
 
+            #get pickup,delivery,amount
+            nw.demand_list = select_file.demand_node_yaml
+            
             state =3
 
 
@@ -219,21 +232,55 @@ if __name__ == '__main__':
                 if event.type == pg.QUIT:
                     pg.quit()
                     exit()
-            
-           
+            #save G graph as G-backup
+            G_backup = G
 
-           
+            # Do only 1 time
             if select_file.timeread==0:
-                A = select_file.A_matrix
-                A = np.array(A)
-                A = array(A,dtype=[("cost", int)])
-                B = from_numpy_matrix(A, create_using=nx.DiGraph())
-                set_node_attributes(B, values=nw.demand_list, name="demand")
-                B = relabel_nodes(B, {0: "Source", 10: "Sink"})
+                draw.show_nx_graph()
+                A = array(select_file.A_matrix,dtype=[("cost", float)])
+                G = from_numpy_matrix(A, create_using=nx.DiGraph())
+                last_node = nw.nodelist[-1]
+                #plt.savefig(fname='Graph')
+                #plt.show()
+                
 
+                G = relabel_nodes(G, {0: "Source", last_node: "Sink"})  #set 0 as Source and lastnode as Sink
+                for u,v in nw.demand_list.items():
+                    G.nodes[v[0]]["request"] = v[1]
+                    G.nodes[v[0]]["demand"] = v[2]
+                    G.nodes[v[1]]["demand"] = -v[2]
+                nw.prob = VehicleRoutingProblem(G,load_capacity=5,num_stops=5,pickup_delivery=True)
+                nw.prob.solve(cspy=False)
+
+                best_route = nw.prob.best_routes
+                
+                print("Best Routes  = ",nw.prob.best_routes)
+                #print("Best Values  = ",nw.prob.best_value)
+
+
+                for s,e in best_route.items():
+                    t.append(e)
+                for i in range(0,len(t)):
+                    nw.route=[]
+                    t1=[]
+                    len_route = len(t[i])
+                    for j in range(len_route):
+                        if t[i][j] == 'Source':
+                            t[i][j] = 0
+                        if t[i][j] == 'Sink':
+                            t[i][j] = last_node
+
+                    for k in range(len_route-1):
+                        t1+=(nw.astar(G_backup,t[i][k],t[i][k+1]))
+                    t1[0]='Source'
+                    t1[-1]='Sink'
+                    nw.route = list(dict.fromkeys(t1))
+                    nw.route_astar.append(nw.route)          
+                print(nw.route_astar)    
                 select_file.timeread = 1
 
-            draw.show_nx_graph()
+            # draw.show_nx_graph()
    
 
             
