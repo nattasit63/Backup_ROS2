@@ -1,5 +1,5 @@
 from array import array
-from fileinput import filename
+from calendar import firstweekday
 import pygame as pg
 import yaml
 from tkinter import *
@@ -11,7 +11,6 @@ import numpy as np
 from networkx import DiGraph, from_numpy_matrix, relabel_nodes, set_node_attributes
 from numpy import array
 from vrpy import VehicleRoutingProblem
-from PIL import Image
 
 class Begin():
     def __init__(self):
@@ -52,7 +51,6 @@ class Select_file():
         loaded = np.array(loaded)
         # print(loaded)
         print('Read Done !')
-        
         return loaded
 
 
@@ -60,14 +58,29 @@ class Draw():
     def __init__(self):  
         self.update = pg.display.update()
         self.flag_draw = 0
+        self.font = pg.font.SysFont("Cordia New",begin.height//24)
+        firebrick = (178,34,34)
+        navy = (0,0,128)
+        brown = (139,69,19)
+        seagreen = (46,139,87)
+        self.color = [firebrick,navy,seagreen,brown]
     def circle(self,pos_x,pos_y,radius):
         pg.draw.circle(begin.screen, (0, 255, 0),[pos_x, pos_y],radius)
         self.update
     def line(self,x1,y1,x2,y2):
-        pg.draw.line(begin.screen, (255, 0, 0), (x1, y1), (x2, y2))
+        pg.draw.line(begin.screen, (255, 0, 0), (x1, y1), (x2, y2),width=5)
         self.flag_draw =1
         pg.display.flip()
-    
+    def line_color(self,x1,y1,x2,y2,color):
+        pg.draw.line(begin.screen, color, (x1, y1), (x2, y2),width=5)
+        self.flag_draw =1
+        pg.display.flip()
+    def buildtext(self,text,posx,posy):
+        pos=(posx,posy)
+        label = self.font.render(str(text),1,(0,0,0))
+        begin.screen.blit(self.font.render(str(text),True, (0 ,0 ,0)),pos)
+        pg.display.update()
+
     def show_nx_graph(self):
         pos = nx.get_node_attributes(G,'pos')
         labels = nx.get_edge_attributes(G,'weight')
@@ -138,7 +151,6 @@ class NX():
         return self.adjMatrix
                 
                
-
 if __name__ == '__main__':
     pg.init()
     pg.font.init()
@@ -147,6 +159,10 @@ if __name__ == '__main__':
     nw = NX()
     G = DiGraph()
     num_pressadd = 0
+    num_node = 0
+    node_pos=[]
+    t_map =[]
+    t_route=[]
     time_run=1
     screen_list=[]
     select_file = Select_file()
@@ -167,47 +183,59 @@ if __name__ == '__main__':
                 if ev.type == pg.QUIT:
                     pg.quit()
                     exit()
+            # draw.buildtext('Add node : Left click',begin.width/64,begin.height/24)
+            # draw.buildtext('Undo : Right click',begin.width/64,begin.height/12)
+            # draw.buildtext('Map : ' + str(select_file.image_file),begin.width/1.17,begin.height/1.058)
             state=1
         
         elif state==1:
             mouse = pg.mouse.get_pos() 
+            pg.display.update()
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     pg.quit()
                     exit()
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_RETURN:
+                        state=2
                 elif event.type == pg.MOUSEBUTTONDOWN and event.button==1: #if left click ,Add node at mouse pos
                     current_screen = pg.Surface.copy(begin.screen)
                     screen_list.append(current_screen)
                     draw.circle(mouse[0],mouse[1],begin.width//100)
+                    # print(mouse)
                     num_pressadd+=1
                     
                 elif event.type == pg.MOUSEBUTTONDOWN and event.button==3:  #if right click ,Undo one time
                     if num_pressadd>=0:
                         num_pressadd = num_pressadd-1
                         begin.screen.blit(current_screen,(0,0))
-            pg.display.update()
-            state=2
-
+               
+            
         elif state==2:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     pg.quit()
                     exit()
+            for n,p in select_file.node_list_yaml.items():
+                last_num_node=n+1
+            node_pos = [None]* last_num_node            #Create None array 
+            for n,p in select_file.node_list_yaml.items(): #Append node pos at array chanel n
+                node_pos[n] = p
+            for s,e in select_file.edge_list_yaml.items():
+                draw.line(node_pos[e[0]][0],node_pos[e[0]][1],node_pos[e[1]][0],node_pos[e[1]][1])
+                pg.display.update()
             for n,p in select_file.node_list_yaml.items():  #Add nodes from yaml
+                draw.circle(p[0],p[1],begin.width//70)
+                draw.buildtext(num_node,p[0]-(begin.width//80)/2,p[1]-(begin.width//80)/2)
+                pg.display.update()
                 G.add_node(str(n),pos=p)
+                num_node+=1
                 nw.nodelist.append(n)
+
             for s,e in select_file.edge_list_yaml.items():  #Add edge from yaml
                 G.add_edge(str(e[0]),str(e[1]),weight = e[2])
                 nw.astar_path_cost.append(e[2])
-
-            # for c,v in select_file.assign_node.items():     #Assign nodes from yaml
-            #     if c == "pick_up":
-            #         nw.pickup_node+=v
-            #     if c == "depot":
-            #         nw.depot_node+=v
-            #     if c == "drop off":
-            #         nw.dropoff_node+=v
-      
+                
 
             #Sum a* path cost to matrix
             adj_matrix = nw.adjacency_matrix(nw.nodelist) 
@@ -227,7 +255,7 @@ if __name__ == '__main__':
             state =3
 
 
-        elif state==3:
+        elif state==3:  #VRP
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     pg.quit()
@@ -243,44 +271,65 @@ if __name__ == '__main__':
                 last_node = nw.nodelist[-1]
                 #plt.savefig(fname='Graph')
                 #plt.show()
-                
 
-                G = relabel_nodes(G, {0: "Source", last_node: "Sink"})  #set 0 as Source and lastnode as Sink
-                for u,v in nw.demand_list.items():
-                    G.nodes[v[0]]["request"] = v[1]
-                    G.nodes[v[0]]["demand"] = v[2]
-                    G.nodes[v[1]]["demand"] = -v[2]
-                nw.prob = VehicleRoutingProblem(G,load_capacity=5,num_stops=5,pickup_delivery=True)
-                nw.prob.solve(cspy=False)
+                # G = relabel_nodes(G, {0: "Source", last_node: "Sink"})  #set 0 as Source and lastnode as Sink
+                # for u,v in nw.demand_list.items():
+                #     G.nodes[v[0]]["request"] = v[1]
+                #     G.nodes[v[0]]["demand"] = v[2]
+                #     G.nodes[v[1]]["demand"] = -v[2]
+                # nw.prob = VehicleRoutingProblem(G,load_capacity=5,num_stops=5,pickup_delivery=True)
+                # nw.prob.solve(cspy=False)
+                # best_route = nw.prob.best_routes
 
-                best_route = nw.prob.best_routes
-                
-                print("Best Routes  = ",nw.prob.best_routes)
-                #print("Best Values  = ",nw.prob.best_value)
-
-
+                # print(best_route)
+                # print("Best Values  = ",nw.prob.best_value)
+                best_route = {1: ['Source', 5, 9, 16, 14, 'Sink'], 2: ['Source', 15, 13, 12, 11, 'Sink'], 3: ['Source', 7, 8, 2, 10, 'Sink'], 4: ['Source', 1, 4, 3, 6, 'Sink']}
+                print(best_route)
                 for s,e in best_route.items():
                     t.append(e)
+                    t_map.append(e)
                 for i in range(0,len(t)):
-                    nw.route=[]
-                    t1=[]
-                    len_route = len(t[i])
-                    for j in range(len_route):
-                        if t[i][j] == 'Source':
-                            t[i][j] = 0
-                        if t[i][j] == 'Sink':
-                            t[i][j] = last_node
+                    if i ==1:
+                        nw.route=[]
+                        t1=[]
+                        t2=[]
+                        len_route = len(t[i])
+                        for j in range(len_route):
+                            if t[i][j] == 'Source':
+                                t[i][j] = 0
+                                t_map[i][j] = 0
+                            if t[i][j] == 'Sink':
+                                t[i][j] = last_node
+                                t_map[i][j] = last_node
+                        for k in range(len_route-1):
+                            t1+=(nw.astar(G_backup,t[i][k],t[i][k+1]))
+                            t2+=(nw.astar(G_backup,t_map[i][k],t_map[i][k+1]))
 
-                    for k in range(len_route-1):
-                        t1+=(nw.astar(G_backup,t[i][k],t[i][k+1]))
-                    t1[0]='Source'
-                    t1[-1]='Sink'
-                    nw.route = list(dict.fromkeys(t1))
-                    nw.route_astar.append(nw.route)          
-                print(nw.route_astar)    
+                        for z in range(len(t1)):
+                            pass
+                        # t1[0]='Source'
+                        # t1[-1]='Sink'
+                        # nw.route = list(dict.fromkeys(t1))
+                        nw.route = t1
+                        print(nw.route)
+                        nw.route_astar.append(nw.route)         
+                        # t2 = list(dict.fromkeys(t2))
+                        t_route.append(t2)
+
+
+                # print('All Route a* =  ', nw.route_astar)    
+                # print('t_route = ', t_route)
                 select_file.timeread = 1
+             # draw.show_nx_graph()
+            # state = 4
+        
+        elif state == 4:
+            test = [['0', '8', '6', '2', '5', '9', '10', '16', '14', '12', '11', '15', '13', '17'], ['0', '12', '11', '15', '13', '7', '1', '4', '3', '8', '6', '2', '5', '9', '10', '16', '14', '17'], ['0', '7', '1', '4', '3', '8', '6', '2', '5', '9', '10', '16', '14', '12', '11', '15', '13', '17'], ['0', '7', '1', '4', '3', '8', '6', '2', '5', '9', '10', '16', '14', '12', '11', '15', '13', '17']]
+            for i in range(len(test)):
+                pass
 
-            # draw.show_nx_graph()
+            state=5
+           
    
 
             
